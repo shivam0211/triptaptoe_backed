@@ -26,15 +26,16 @@ app.use(
 );
 
 const userRoute = require("./src/routes/User_route");
+const flightRoute = require("./src/routes/Flight_Route");
 
 app.use("/user", userRoute);
-
+app.use("/flights",flightRoute);
 
 app.get("/", (req, res, next) => {
   res.send("Node start");
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Server listening on port ${port}!`))
 
 
 
