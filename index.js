@@ -39,35 +39,33 @@ app.get("/", (req, res, next) => {
 });
 
 
+//this timer function renews the token id in every 24 hours
+setTimeout(function(){
+  var data1 = {
+    "ClientId": process.env.ClientId,
+    "UserName": process.env.UserName,
+    "Password": process.env.Password, 
+    "EndUserIp": process.env.EndUserIp
+  };
+  axios({
+    method: 'POST',
+    url: 'http://api.tektravels.com/SharedServices/SharedData.svc/rest/Authenticate',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data:data1
+  }).then((response)=>{
+            const fs = require('fs') 
+            const envfile = require('envfile')
+            const sourcePath = '.env'
+            let parsedFile = envfile.parseFileSync(sourcePath);
+            parsedFile.TokenId = response.data.TokenId;
+            fs.writeFileSync('./.env', envfile.stringifySync(parsedFile)) 
+            console.log("token id renewed");
+     },(error)=>{res.send(error)}
+  );
+},10*60*60*24);
 
-
-// This route renews tokenid an needs to be called in every 24 hours
-app.post("/authenticate",(req,res,next)=>{
-      var data1 = {
-        "ClientId": process.env.ClientId,
-        "UserName": process.env.UserName,
-        "Password": process.env.Password, 
-        "EndUserIp": process.env.EndUserIp
-      };
-      axios({
-        method: 'POST',
-        url: 'http://api.tektravels.com/SharedServices/SharedData.svc/rest/Authenticate',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data:data1
-      }).then((response)=>{
-        //res.send(response.data.TokenId);
-                const fs = require('fs') 
-                const envfile = require('envfile')
-                const sourcePath = '.env'
-                let parsedFile = envfile.parseFileSync(sourcePath);
-                parsedFile.TokenId = response.data.TokenId;
-                fs.writeFileSync('./.env', envfile.stringifySync(parsedFile)) 
-                res.send("file was renewed");
-         },(error)=>{res.send(error)}
-      );
-});
 
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))
