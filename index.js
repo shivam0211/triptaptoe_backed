@@ -29,10 +29,12 @@ app.use(
 const userRoute = require("./src/routes/User_route");
 const flightRoute = require("./src/routes/Flight_Route");
 const hotelroute = require("./src/routes/Hotel_route");
+const auth = require("./src/routes/auth_route");
 
 app.use("/user", userRoute);
 app.use("/flights",flightRoute);
 app.use("/hotels",hotelroute);
+app.use("/signin",auth);
 
 app.get("/", (req, res, next) => {
   res.send("Node start");
